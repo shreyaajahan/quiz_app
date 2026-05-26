@@ -8,12 +8,21 @@ function Signup() {
   const [confirmPassword, setConfirmPassword] = useState("");
 
   const handleSignup = () => {
-    console.log("Name:", name);
-    console.log("Email:", email);
-    console.log("Password:", password);
-    console.log("Confirm Password:", confirmPassword);
-    alert("Signup button clicked");
-  };
+  if (!name || !email || !password || !confirmPassword) {
+    alert("Please fill all fields");
+    return;
+  }
+
+  if (password !== confirmPassword) {
+    alert("Passwords do not match");
+    return;
+  }
+
+  console.log("Name:", name);
+  console.log("Email:", email);
+  console.log("Password:", password);
+  alert("Signup successful");
+};
 
   return (
     <div className="container">
@@ -64,8 +73,6 @@ function Signup() {
           Signup
         </button>
 
-        <p className="link-text">Name: {name}</p>
-        <p className="link-text">Email: {email}</p>
 
         <p className="link-text">
           Already have an account? <Link to="/login">Login</Link>

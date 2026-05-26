@@ -2,45 +2,63 @@ import { useState } from "react";
 
 function Quiz() {
   const questions = [
-    {
-      question: "What is React?",
-      options: ["Database", "JavaScript Library", "Operating System", "API"],
-    },
-    {
-      question: "Which hook is used for state in React?",
-      options: ["useState", "useFetch", "useNode", "useAPI"],
-    },
-    {
-      question: "What does JSX stand for?",
-      options: [
-        "Java Syntax XML",
-        "JavaScript XML",
-        "JSON XML",
-        "Java Extend",
-      ],
-    },
-  ];
+  {
+    question: "What is React?",
+    options: ["Database", "JavaScript Library", "Operating System", "API"],
+    correctAnswer: "JavaScript Library",
+  },
+  {
+    question: "Which hook is used for state in React?",
+    options: ["useState", "useFetch", "useNode", "useAPI"],
+    correctAnswer: "useState",
+  },
+  {
+    question: "What does JSX stand for?",
+    options: [
+      "Java Syntax XML",
+      "JavaScript XML",
+      "JSON XML",
+      "Java Extend",
+    ],
+    correctAnswer: "JavaScript XML",
+  },
+];
 
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [selectedOption, setSelectedOption] = useState("");
+  const [selectedAnswers, setSelectedAnswers] = useState({});
+  const [score, setScore] = useState(0);
 
   const handleOptionClick = (option) => {
-    setSelectedOption(option);
-  };
+  setSelectedAnswers({
+    ...selectedAnswers,
+    [currentQuestion]: option,
+  });
+};
 
   const handleNext = () => {
     if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
-      setSelectedOption("");
     }
   };
 
   const handlePrevious = () => {
     if (currentQuestion > 0) {
       setCurrentQuestion(currentQuestion - 1);
-      setSelectedOption("");
     }
   };
+
+  const handleSubmit = () => {
+  let finalScore = 0;
+
+  questions.forEach((question, index) => {
+    if (selectedAnswers[index] === question.correctAnswer) {
+      finalScore++;
+    }
+  });
+
+  setScore(finalScore);
+  alert(`Your Final Score: ${finalScore} / ${questions.length}`);
+};
 
   return (
     <div className="container">
@@ -60,7 +78,7 @@ function Quiz() {
             <button
               key={option}
               className={`option-btn ${
-                selectedOption === option ? "selected" : ""
+                selectedAnswers[currentQuestion] === option ? "selected" : ""
               }`}
               onClick={() => handleOptionClick(option)}
             >
@@ -69,7 +87,7 @@ function Quiz() {
           ))}
         </div>
 
-        <p className="link-text">Selected: {selectedOption}</p>
+       
 
         <div className="quiz-nav">
           <button className="btn" onClick={handlePrevious}>
@@ -80,7 +98,7 @@ function Quiz() {
             Next
           </button>
 
-          <button className="btn">Submit</button>
+         <button className="btn" onClick={handleSubmit}>Submit</button>
         </div>
       </div>
     </div>

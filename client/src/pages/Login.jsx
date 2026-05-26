@@ -5,10 +5,14 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = () => {
+ const handleLogin = () => {
+  if (!email || !password) {
+    alert("Please fill all fields");
+    return;
+  }
   console.log("Email:", email);
   console.log("Password:", password);
-  alert("Login button clicked");
+  alert("Login successful");
 };
 
   return (
@@ -37,8 +41,7 @@ function Login() {
         </div>
 
         <button className="btn" onClick={handleLogin}>Login</button>
-        <p className="link-text">Email: {email}</p>
-        <p className="link-text">Password: {password}</p>
+  
 
         <p className="link-text">
           Don’t have an account? <Link to="/signup">Signup</Link>
