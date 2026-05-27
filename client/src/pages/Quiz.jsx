@@ -1,32 +1,38 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function Quiz() {
-  const questions = [
-  {
-    question: "What is React?",
-    options: ["Database", "JavaScript Library", "Operating System", "API"],
-    correctAnswer: "JavaScript Library",
-  },
-  {
-    question: "Which hook is used for state in React?",
-    options: ["useState", "useFetch", "useNode", "useAPI"],
-    correctAnswer: "useState",
-  },
-  {
-    question: "What does JSX stand for?",
-    options: [
-      "Java Syntax XML",
-      "JavaScript XML",
-      "JSON XML",
-      "Java Extend",
-    ],
-    correctAnswer: "JavaScript XML",
-  },
-];
-
+  const [questions, setQuestions] = useState([]);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState({});
   const [score, setScore] = useState(0);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+  fetchQuestions();
+}, []);
+
+const fetchQuestions = async () => {
+  try {
+    const token = localStorage.getItem("token");
+
+    const response = await axios.get(
+      `${import.meta.env.VITE_API_URL}/api/questions`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    setQuestions(response.data.questions);
+
+    console.log(response.data.questions);
+  } catch (error) {
+    console.log(error);
+  }
+};
 
   const handleOptionClick = (option) => {
   setSelectedAnswers({
@@ -57,8 +63,16 @@ function Quiz() {
   });
 
   setScore(finalScore);
-  alert(`Your Final Score: ${finalScore} / ${questions.length}`);
+  navigate("/result", {
+  state: {
+    score: finalScore,
+    total: questions.length,
+  },
+});
 };
+if (questions.length === 0) {
+  return <h2>Loading...</h2>;
+}
 
   return (
     <div className="container">

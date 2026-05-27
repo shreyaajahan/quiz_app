@@ -1,18 +1,44 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
- const handleLogin = () => {
+ const handleLogin = async () => {
   if (!email || !password) {
-    alert("Please fill all fields");
-    return;
-  }
-  console.log("Email:", email);
-  console.log("Password:", password);
-  alert("Login successful");
+  alert("Please fill all fields");
+  return;
+}
+
+try {
+  const response = await axios.post(
+    `${import.meta.env.VITE_API_URL}/api/auth/login`,
+    {
+      email,
+      password,
+    }
+  );
+
+  // Store token
+  localStorage.setItem("token", response.data.token);
+
+  // Store user
+  localStorage.setItem(
+    "user",
+    JSON.stringify(response.data.user)
+  );
+
+  alert(response.data.message);
+
+  console.log(response.data);
+
+  navigate("/dashboard");
+} catch (error) {
+  alert(error.response.data.message);
+}
 };
 
   return (

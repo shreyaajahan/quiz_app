@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 function Signup() {
   const [name, setName] = useState("");
@@ -7,7 +8,7 @@ function Signup() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const handleSignup = () => {
+  const handleSignup = async () => {
   if (!name || !email || !password || !confirmPassword) {
     alert("Please fill all fields");
     return;
@@ -18,10 +19,22 @@ function Signup() {
     return;
   }
 
-  console.log("Name:", name);
-  console.log("Email:", email);
-  console.log("Password:", password);
-  alert("Signup successful");
+  try {
+  const response = await axios.post(
+    `${import.meta.env.VITE_API_URL}/api/auth/signup`,
+    {
+      name,
+      email,
+      password,
+    }
+  );
+
+  alert(response.data.message);
+
+  console.log(response.data);
+} catch (error) {
+  alert(error.response.data.message);
+}
 };
 
   return (
