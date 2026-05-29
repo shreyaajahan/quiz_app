@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 
@@ -7,15 +7,28 @@ function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [toast, setToast] = useState(null);
+
+  useEffect(() => {
+    if (!toast) {
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      setToast(null);
+    }, 2500);
+
+    return () => clearTimeout(timer);
+  }, [toast]);
 
   const handleSignup = async () => {
   if (!name || !email || !password || !confirmPassword) {
-    alert("Please fill all fields");
+    setToast({ type: "error", message: "Please fill all fields" });
     return;
   }
 
   if (password !== confirmPassword) {
-    alert("Passwords do not match");
+    setToast({ type: "error", message: "Passwords do not match" });
     return;
   }
 
@@ -29,18 +42,25 @@ function Signup() {
     }
   );
 
-  alert(response.data.message);
+  setToast({ type: "success", message: response.data.message });
 
   console.log(response.data);
 } catch (error) {
-  alert(error.response.data.message);
+  setToast({ type: "error", message: error.response.data.message });
 }
 };
 
   return (
-    <div className="container">
-      <div className="card">
+    <div className="container signup-container">
+      {toast ? (
+        <div className={`toast toast-${toast.type}`} role="status" aria-live="polite">
+          {toast.message}
+        </div>
+      ) : null}
+      <div className="card signup-card">
+        <p className="signup-badge">Quiz App</p>
         <h1>Create Account</h1>
+        <p className="signup-subtitle">Join the quiz app and start tracking your progress.</p>
 
         <div className="input-group">
           <label>Name</label>
@@ -82,12 +102,12 @@ function Signup() {
           />
         </div>
 
-        <button className="btn" onClick={handleSignup}>
+        <button className="btn signup-btn" onClick={handleSignup}>
           Signup
         </button>
 
 
-        <p className="link-text">
+        <p className="link-text signup-link-text">
           Already have an account? <Link to="/login">Login</Link>
         </p>
       </div>

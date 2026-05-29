@@ -12,6 +12,7 @@ import History from "./pages/History";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AdminRoute from "./components/AdminRoute";
 
+
 function App() {
   return (
     <Routes>
@@ -59,6 +60,14 @@ function App() {
   element={
     <ProtectedRoute>
       <History />
+    </ProtectedRoute>
+  }
+/>
+<Route
+  path="/leaderboard"
+  element={
+    <ProtectedRoute>
+      <Leaderboard />
     </ProtectedRoute>
   }
 />
