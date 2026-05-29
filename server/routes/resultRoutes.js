@@ -46,9 +46,14 @@ router.get("/leaderboard", protect, async (req, res) => {
   try {
     const leaderboard = await Result.aggregate([
       {
+        $sort: {
+          score: -1
+        }
+      },
+      {
         $group: {
           _id: "$user",
-          highestScore: { $max: "$score" },
+          highestScore: { $first: "$score" },
           totalQuestions: { $first: "$totalQuestions" }
         }
       },
