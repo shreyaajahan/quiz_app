@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import api from "../services/api";
 
 function Leaderboard() {
   const [results, setResults] = useState([]);
@@ -15,14 +15,11 @@ function Leaderboard() {
     try {
       const token = localStorage.getItem("token");
 
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/results/leaderboard`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await api.get("/api/results/leaderboard", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       setResults(response.data.results);
       console.log(response.data.results);

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../services/api";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -27,13 +27,10 @@ function Login() {
 }
 
 try {
-  const response = await axios.post(
-    `${import.meta.env.VITE_API_URL}/api/auth/login`,
-    {
-      email,
-      password,
-    }
-  );
+  const response = await api.post("/api/auth/login", {
+    email,
+    password,
+  });
 
   // Store token
   localStorage.setItem("token", response.data.token);
@@ -50,7 +47,10 @@ try {
 
   setTimeout(() => navigate("/dashboard"), 900);
 } catch (error) {
-  setToast({ type: "error", message: error.response.data.message });
+  setToast({
+    type: "error",
+    message: error.response?.data?.message || "Unable to login right now",
+  });
 }
 };
 

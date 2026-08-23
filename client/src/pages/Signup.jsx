@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
+import api from "../services/api";
 
 function Signup() {
   const [name, setName] = useState("");
@@ -33,20 +33,20 @@ function Signup() {
   }
 
   try {
-  const response = await axios.post(
-    `${import.meta.env.VITE_API_URL}/api/auth/signup`,
-    {
-      name,
-      email,
-      password,
-    }
-  );
+  const response = await api.post("/api/auth/signup", {
+    name,
+    email,
+    password,
+  });
 
   setToast({ type: "success", message: response.data.message });
 
   console.log(response.data);
 } catch (error) {
-  setToast({ type: "error", message: error.response.data.message });
+  setToast({
+    type: "error",
+    message: error.response?.data?.message || "Unable to sign up right now",
+  });
 }
 };
 

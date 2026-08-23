@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import api from "../services/api";
 
 function History() {
   const [results, setResults] = useState([]);
@@ -15,14 +15,11 @@ function History() {
     try {
       const token = localStorage.getItem("token");
 
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/results/history`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await api.get("/api/results/history", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       setResults(response.data.results);
       setLoading(false);

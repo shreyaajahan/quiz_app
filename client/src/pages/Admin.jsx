@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../services/api";
 
 function Admin() {
   const [question, setQuestion] = useState("");
@@ -22,14 +22,11 @@ function Admin() {
     try {
       const token = localStorage.getItem("token");
 
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/questions`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await api.get("/api/questions", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       setQuestions(response.data.questions);
 
@@ -63,13 +60,11 @@ function Admin() {
 
       if (editingId) {
         // UPDATE QUESTION
-        response = await axios.put(
-          `${import.meta.env.VITE_API_URL}/api/questions/${editingId}`,
+        response = await api.put(
+          `/api/questions/${editingId}`,
           {
             question,
-            options: options
-              .split(",")
-              .map((option) => option.trim()),
+            options: options.split(",").map((option) => option.trim()),
             correctAnswer: correctAnswer.trim(),
           },
           {
@@ -80,13 +75,11 @@ function Admin() {
         );
       } else {
         // ADD QUESTION
-        response = await axios.post(
-          `${import.meta.env.VITE_API_URL}/api/questions`,
+        response = await api.post(
+          "/api/questions",
           {
             question,
-            options: options
-              .split(",")
-              .map((option) => option.trim()),
+            options: options.split(",").map((option) => option.trim()),
             correctAnswer: correctAnswer.trim(),
           },
           {
@@ -121,14 +114,11 @@ function Admin() {
     try {
       const token = localStorage.getItem("token");
 
-      const response = await axios.delete(
-        `${import.meta.env.VITE_API_URL}/api/questions/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await api.delete(`/api/questions/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       setToast({ type: "success", message: response.data.message });
 
