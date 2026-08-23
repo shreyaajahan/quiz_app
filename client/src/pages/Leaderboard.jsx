@@ -5,6 +5,7 @@ import api from "../services/api";
 function Leaderboard() {
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -13,6 +14,7 @@ function Leaderboard() {
 
   const fetchLeaderboard = async () => {
     try {
+      setError("");
       const token = localStorage.getItem("token");
 
       const response = await api.get("/api/results/leaderboard", {
@@ -26,12 +28,17 @@ function Leaderboard() {
       setLoading(false);
     } catch (error) {
       console.log(error);
+      setError(error.response?.data?.message || "Unable to load leaderboard right now");
       setLoading(false);
     }
   };
 
   if (loading) {
     return <h2 className="leaderboard-state">Loading Leaderboard...</h2>;
+  }
+
+  if (error) {
+    return <h2 className="leaderboard-state">{error}</h2>;
   }
 
   if (results.length === 0) {

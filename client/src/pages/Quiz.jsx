@@ -10,6 +10,7 @@ function Quiz() {
   const [timeLeft, setTimeLeft] = useState(600);
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const [toast, setToast] = useState(null);
   const navigate = useNavigate();
 
@@ -45,6 +46,7 @@ useEffect(() => {
 }, []);
 const fetchQuestions = async () => {
   try {
+    setError("");
     const token = localStorage.getItem("token");
 
     const response = await api.get("/api/questions", {
@@ -59,6 +61,7 @@ const fetchQuestions = async () => {
     console.log(response.data.questions);
   } catch (error) {
     console.log(error);
+    setError(error.response?.data?.message || "Unable to load questions right now");
     setLoading(false);
   }
 };
@@ -145,6 +148,10 @@ const seconds = timeLeft % 60;
 
 if (loading) {
   return <h2 className="quiz-state">Loading Questions...</h2>;
+}
+
+if (error) {
+  return <h2 className="quiz-state">{error}</h2>;
 }
 
 if (questions.length === 0) {

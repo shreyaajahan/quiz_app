@@ -5,6 +5,7 @@ import api from "../services/api";
 function History() {
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -13,6 +14,7 @@ function History() {
 
   const fetchHistory = async () => {
     try {
+      setError("");
       const token = localStorage.getItem("token");
 
       const response = await api.get("/api/results/history", {
@@ -25,12 +27,17 @@ function History() {
       setLoading(false);
     } catch (error) {
       console.log(error);
+      setError(error.response?.data?.message || "Unable to load history right now");
       setLoading(false);
     }
   };
 
   if (loading) {
     return <h2>Loading History...</h2>;
+  }
+
+  if (error) {
+    return <h2>{error}</h2>;
   }
 
   if (results.length === 0) {

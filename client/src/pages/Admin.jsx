@@ -11,6 +11,7 @@ function Admin() {
 
   const [questions, setQuestions] = useState([]);
   const [toast, setToast] = useState(null);
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   // Fetch Questions
@@ -20,6 +21,7 @@ function Admin() {
 
   const fetchQuestions = async () => {
     try {
+      setError("");
       const token = localStorage.getItem("token");
 
       const response = await api.get("/api/questions", {
@@ -33,6 +35,7 @@ function Admin() {
       console.log(response.data.questions);
     } catch (error) {
       console.log(error);
+      setError(error.response?.data?.message || "Unable to load questions right now");
     }
   };
 
@@ -210,6 +213,8 @@ function Admin() {
         </div>
 
         <h2 className="admin-section-title">All Questions</h2>
+
+        {error ? <h3 className="admin-error">{error}</h3> : null}
 
         <div className="admin-list">
           {questions.map((q) => (
