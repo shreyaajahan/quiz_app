@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import api from "../services/api";
 
 function Signup() {
@@ -8,6 +8,7 @@ function Signup() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [toast, setToast] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!toast) {
@@ -33,21 +34,21 @@ function Signup() {
   }
 
   try {
-  const response = await api.post("/api/auth/signup", {
-    name,
-    email,
-    password,
-  });
+    const response = await api.post("/api/auth/signup", {
+      name,
+      email,
+      password,
+    });
 
-  setToast({ type: "success", message: response.data.message });
+    setToast({ type: "success", message: response.data.message });
 
-  console.log(response.data);
-} catch (error) {
-  setToast({
-    type: "error",
-    message: error.response?.data?.message || "Unable to sign up right now",
-  });
-}
+    setTimeout(() => navigate("/login"), 900);
+  } catch (error) {
+    setToast({
+      type: "error",
+      message: error.response?.data?.message || "Unable to sign up right now",
+    });
+  }
 };
 
   return (
